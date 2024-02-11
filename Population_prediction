@@ -1,0 +1,79 @@
+#include <iostream>
+#include <iomanip>
+using namespace std;
+/*
+
+THIS PROGRAM USES 2D ARRAY AND 1D ARRAY TO PERFROM MATRIX MULTIPLICATION IN ORDER TO
+PREDICT THE POPULATION FOR UPCOMING YEAR N TIMES.
+                  Population
+                    (cols)
+            |   70%   25%   15%   1%  |
+ Regions    |   5%    45%   15%   0%  |
+  (rows)    |   5%    10%   45%   0%  |
+            |   20%   20%   25%  99%  |
+
+  Region 1 |  50,000 |
+  Region 2 | 350,000 |
+  Region 3 |  75,000 |
+  Region 4 |   2,000 |
+
+(a) We  use  transition  matrix  A  (n  x  m) and initial state
+vector  𝑥0  (n  x  1)  for describing the properties of system and initial conditions.
+(b)  We find the new state of system as  𝑥1 =𝐴𝑥0.
+(c)  We find in year k+1 that distribution is given by 𝑥𝑘+1 =𝐴𝑥𝑘.
+*/
+
+const int MAX_ROWS = 4;
+const int MAX_COLS = 4;
+
+int main(){
+
+  double matrix[MAX_ROWS][MAX_COLS] = {{.70, .25, .15, .01},
+                                       {.05, .45, .15, 0},
+                                       {.05, .10, .45, 0},
+                                       {.20, .20, .25, .99}};
+
+  int region[MAX_ROWS] = {50000, 350000, 75000, 2000};
+  int newPop[MAX_ROWS] = {0};
+  int year = 1;
+  bool foundNegative = false;
+
+  cout << fixed << setprecision(2);
+  while (year <= 25){
+    string lines;
+    lines.append(50, '_');
+    cout << lines << endl;
+
+    for (int row = 0; row < MAX_ROWS; row++){
+      int sum = 0;
+      for (int col = 0; col < MAX_COLS; col++){
+        if (region[col] < 0 || matrix[row][col] < 0){
+          foundNegative = true;
+          break;
+        }else{
+          sum += region[col] * matrix[row][col];
+        }
+      }
+      newPop[row] = sum;
+    }
+    if (foundNegative == true){
+      cout << "Poplulation for year " << year << " could not be "
+           << "computed due to a negative variable." << endl;
+      return 0;
+    }else{
+      cout << "Poplulation for year " << year << " is:\n"
+           << endl;
+
+      for (int index = 0; index < MAX_ROWS; index++){
+        cout << "Region " << index + 1 << ": ";
+        cout << setw(7) << newPop[index] << endl;
+      }
+      for (int idx = 0; idx < MAX_ROWS; idx++){
+        region[idx] = newPop[idx];
+      }
+    }
+    year++;
+    cout << lines << endl << endl;
+  }
+  return 0;
+}
